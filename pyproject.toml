@@ -1,12 +1,13 @@
 [tool.poetry]
 name = "flask-does-huey"
-version = "0.5.1"
+version = "0.5.2"
 description = "Flask extension to use huey task queues"
 authors = ["jthop <jh@mode14.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.7"
+huey = "^2.4.3"
 
 [tool.poetry.dev-dependencies]
 
