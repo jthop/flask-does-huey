@@ -14,6 +14,15 @@
 
 CONFIG 
 
+    REDIS_URL
+    REDIS_HOST
+    REDIS_PORT
+    REDIS_DB
+    REDIS_USERNAME
+    REDIS_PASSWORD
+
+    -OR- (also below is given priority)
+    
     FLASK_DOES_HUEY_URL
     FLASK_DOES_HUEY_HOST
     FLASK_DOES_HUEY_PORT
@@ -41,7 +50,7 @@ from os import environ as env
 from huey import RedisHuey
 
 
-__version__ = '0.5.3'
+__version__ = '0.5.4'
 __author__ = '@jthop'
 
 
