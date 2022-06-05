@@ -1,0 +1,7 @@
+notes.txt
+.git
+__pycache__
+.bumped
+.backup
+make.sh
+dist
