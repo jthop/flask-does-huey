@@ -14,12 +14,12 @@
 
 CONFIG 
 
-    FLASK_DOES_HUEY_URL or REDIS_URL
-    FLASK_DOES_HUEY_HOST or REDIS_HOST
-    FLASK_DOES_HUEY_PORT or REDIS_PORT
-    FLASK_DOES_HUEY_DB or REDIS_DB
-    FLASK_DOES_HUEY_USERNAME or REDIS_USERNAME
-    FLASK_DOES_HUEY_PASSWORD or REDIS_PASSWORD
+    FLASK_DOES_HUEY_URL
+    FLASK_DOES_HUEY_HOST
+    FLASK_DOES_HUEY_PORT
+    FLASK_DOES_HUEY_DB
+    FLASK_DOES_HUEY_USERNAME
+    FLASK_DOES_HUEY_PASSWORD
 
 HOW TO
 
@@ -41,7 +41,7 @@ from os import environ as env
 from huey import RedisHuey
 
 
-__version__ = '0.5.2'
+__version__ = '0.5.3'
 __author__ = '@jthop'
 
 
@@ -86,11 +86,19 @@ class HueyFactory(object):
 
     def _fetch_config(self):
         """
-        Fetch config in the FLASK_DOES_HUEY_ namespace from the app.config dict.
+        Grab both the vague REDIS_ namespace AND the specific FLASK_DOES_HUEY_
+        namespaces from the config and combine them.  FLASK_DOES_HUEY_ will
+        take priority if a key exists in both namespaces.  The resulting values
+        will be used for any configuration needed.
         """
 
-        cfg = self.flask_app.config.get_namespace('FLASK_DOES_HUEY_')
-        clean = {k: v for k, v in cfg.items() if v is not None}
+        vague_ns = self.flask_app.config.get_namespace('REDIS_')
+        specific_ns = self.flask_app.config.get_namespace('FLASK_DOES_HUEY_')
+        combined_ns = {**vague_ns, **specific_ns}   # specific_ns takes priority
+
+        # remove any keys with a value of None
+        clean = {k: v for k, v in combined_ns.items() if v is not None}
+
         self._config = clean
 
     def init_app(self, app, pool=None):
