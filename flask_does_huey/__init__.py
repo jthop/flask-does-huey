@@ -33,12 +33,12 @@ CONFIG
 HOW TO
 
     app = Flask(__name__)
-    h = huey_factory.HueyFactory(app)
+    h = flask_does_huey.HueyFactory(app)
     huey_instance = h.huey
 
      -OR-
 
-    h = huey_factory.HueyFactory()
+    h = flask_does_huey.HueyFactory()
     def create_app():
         app = Flask(__name__)
         h.init_app(app)
@@ -50,7 +50,7 @@ from os import environ as env
 from huey import RedisHuey
 
 
-__version__ = '0.5.4'
+__version__ = '0.5.5'
 __author__ = '@jthop'
 
 
@@ -87,7 +87,7 @@ class HueyFactory(object):
     def is_worker(self):
         """This is useful to instantiate your slimmed flask app instance for
         huey task workers. 
-        Required: APP_TASK_WORKER environment variable
+        Required: TASK_WORKER environment variable
         """
 
         worker = env.get('TASK_WORKER')
