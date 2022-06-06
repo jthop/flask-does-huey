@@ -33,12 +33,12 @@ CONFIG
 HOW TO
 
     app = Flask(__name__)
-    h = flask_does_huey.HueyFactory(app)
+    h = flask_does_huey.HueyManager(app)
     huey_instance = h.huey
 
      -OR-
 
-    h = flask_does_huey.HueyFactory()
+    h = flask_does_huey.HueyManager()
     def create_app():
         app = Flask(__name__)
         h.init_app(app)
@@ -50,11 +50,11 @@ from os import environ as env
 from huey import RedisHuey
 
 
-__version__ = '0.5.5'
+__version__ = '0.5.7'
 __author__ = '@jthop'
 
 
-class HueyFactory(object):
+class HueyManager(object):
     def __init__(self, app=None, pool=None):
         """
         We can set some variables here but no work until we 
@@ -78,7 +78,7 @@ class HueyFactory(object):
     @property
     def initialized(self):
         """
-        Just in case you are curious if the factory is initiated yet
+        Just in case you are curious if the manager is initiated yet
         """
 
         return self._initialized
