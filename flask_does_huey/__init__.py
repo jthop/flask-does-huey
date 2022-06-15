@@ -50,7 +50,7 @@ from os import environ as env
 from huey import RedisHuey
 
 
-__version__ = '0.5.9'
+__version__ = '0.5.10'
 __author__ = '@jthop'
 
 
@@ -72,8 +72,42 @@ class HueyManager(object):
 
         if app is not None:
             self.init_app(app, pool=pool)
-        if pool is not None:
-            self._redis_pool = pool
+
+
+    def init_app(self, app, pool=None):
+        """Delayed instance initiation for application factory pattern
+        Args:
+            app: Flask app beinging initialized from
+            pool(optional): Redis connection pool to use for the redis backend.  
+                If not supplied, a normal redis connection will be used.  The 
+                pool is useful when you want to reuse the pool for other redis
+                connections in your app.
+        """
+
+        # Save this so we can use it later in the extension
+        if not hasattr(app, 'extensions'):
+            app.extensions = {}
+        app.extensions['flask-does-huey'] = self
+
+        self.flask_app = app
+        self._name = self.flask_app.import_name
+        self._redis_pool = pool
+
+        if self._redis_pool is None:
+            self._fetch_config()
+            url = self._config.get('url')
+
+            # if a url is supplied in config use it, 
+            # otherwise hope for enough to connect to redis
+            if url:
+                self.huey = RedisHuey(self._name, url=url)
+            else:
+                self.huey = RedisHuey(self._name, **self._config)
+        else:
+            self.huey = RedisHuey(self._name, connection_pool=pool)
+
+        self._initialized = True
+        return
 
     @property
     def initialized(self):
@@ -109,34 +143,4 @@ class HueyManager(object):
         clean = {k: v for k, v in combined_ns.items() if v is not None}
 
         self._config = clean
-
-    def init_app(self, app, pool=None):
-        """Delayed instance initiation for application factory pattern
-        Args:
-            app: Flask app beinging initialized from
-            pool(optional): Redis connection pool to use for the redis backend.  
-                If not supplied, a normal redis connection will be used.  The 
-                pool is useful when you want to reuse the pool for other redis
-                connections in your app.
-        """
-
-        self.flask_app = app
-        self._name = self.flask_app.import_name
-        self._redis_pool = pool
-
-        if self._redis_pool is None:
-            self._fetch_config()
-            url = self._config.get('url')
-
-            # if a url is supplied in config use it, 
-            # otherwise hope for enough to connect to redis
-            if url:
-                self.huey = RedisHuey(self._name, url=url)
-            else:
-                self.huey = RedisHuey(self._name, **self._config)
-        else:
-            self.huey = RedisHuey(self._name, connection_pool=pool)
-
-        self._initialized = True
         return
-    
