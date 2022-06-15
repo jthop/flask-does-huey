@@ -1,16 +1,25 @@
-[tool.poetry]
-name = "flask-does-huey"
-version = "0.5.7"
-description = "Flask extension to use huey task queues"
-authors = ["jthop <jh@mode14.com>"]
-license = "MIT"
-
-[tool.poetry.dependencies]
-python = "^3.7"
-huey = "^2.4.3"
-
-[tool.poetry.dev-dependencies]
-
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flask-does-huey"
+description = "Flask extension to use huey task queues"
+readme = "README.md"
+keywords = ["api", "auth"]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Framework :: Flask",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "flask",
+    "huey",
+    'importlib-metadata; python_version<"3.8"',
+]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "flask_does_huey.__version__"}
