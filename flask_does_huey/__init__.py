@@ -50,7 +50,7 @@ from os import environ as env
 from huey import RedisHuey
 
 
-__version__ = '0.5.8'
+__version__ = '0.5.9'
 __author__ = '@jthop'
 
 
